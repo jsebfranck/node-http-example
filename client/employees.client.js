@@ -16,6 +16,9 @@ exports.countEmployees = function() {
     res.setEncoding('utf8');
     res.on('data', function(chunk) {
       var employeesCount = JSON.parse(chunk).count;
+      if (! employeesCount) {
+      	deferred.reject(new Error('Service did not return employees count'));
+      }
       deferred.resolve(employeesCount);
     });
   });
