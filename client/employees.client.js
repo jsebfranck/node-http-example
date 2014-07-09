@@ -12,7 +12,7 @@ exports.countEmployees = function() {
 	path: '/employees/count'
   };
 
-  http.get(options, function(res) {
+  var request = http.get(options, function(res) {
   	if (res.statusCode != 200) {
   	  deferred.reject(new Error('Service has an invalid status code : ' + res.statusCode));
   	}
@@ -26,6 +26,16 @@ exports.countEmployees = function() {
       deferred.resolve(employeesCount);
     });
   });
+
+/*
+  request.on('socket', function (socket) {
+    socket.setTimeout(500);  
+    socket.on('timeout', function() {
+      console.log('timeout');
+      request.abort();
+      deferred.reject(new Error('Service response was too long'));
+    });
+  });*/
 
   return deferred.promise;
 };

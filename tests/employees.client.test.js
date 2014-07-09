@@ -47,4 +47,17 @@ describe('employees count service', function() {
       done();
     });
   });
+
+  it('should return an error is service is too long', function(done) {
+    nock('http://localhost:3000')
+      .get('/employees/count')
+      .delay(1500)
+      .reply(200, {count:1986});
+
+    client.countEmployees().then(function(count) {
+      done(new Error('method should return an error'));
+    }).catch(function() {
+    	done();
+    });
+  });
 });
