@@ -13,6 +13,10 @@ exports.countEmployees = function() {
   };
 
   http.get(options, function(res) {
+  	if (res.statusCode != 200) {
+  	  deferred.reject(new Error('Service has an invalid status code : ' + res.statusCode));
+  	}
+
     res.setEncoding('utf8');
     res.on('data', function(chunk) {
       var employeesCount = JSON.parse(chunk).count;

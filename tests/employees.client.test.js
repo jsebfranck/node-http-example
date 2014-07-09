@@ -35,4 +35,16 @@ describe('employees count service', function() {
       done();
     });
   });
+
+  it('should return an error if http service is in error', function(done) {
+    nock('http://localhost:3000')
+      .get('/employees/count')
+      .reply(500, {});
+
+    client.countEmployees().then(function(count) {
+      done(new Error('method should return an error'));
+    }).catch(function(err) {
+      done();
+    });
+  });
 });
