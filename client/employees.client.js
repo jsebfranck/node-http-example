@@ -2,7 +2,7 @@
 
 var Q = require('Q');
 
-exports.count = function() {
+exports.countEmployees = function() {
   var deferred = Q.defer();
 
   deferred.resolve(0);

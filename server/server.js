@@ -3,7 +3,7 @@
 var express = require('express'),
   app = express();
 
-app.get('/count', function(req, res) {
+app.get('/employees/count', function(req, res) {
   console.log('count method has been called');
   res.send({
     count: 1200
