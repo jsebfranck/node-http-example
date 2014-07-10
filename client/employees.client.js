@@ -1,15 +1,16 @@
 'use strict';
 
 var Q = require('Q'),
-  http = require('http');
+  http = require('http'),
+  config = require('./config');
 
 exports.countEmployees = function() {
   var deferred = Q.defer();
 
   var options = {
-    hostname: 'localhost',
-	port: 3000,
-	path: '/employees/count'
+    hostname: config.hostname,
+	  port: 3000,
+	  path: '/employees/count'
   };
 
   var request = http.get(options, function(res) {
@@ -25,6 +26,10 @@ exports.countEmployees = function() {
       }
       deferred.resolve(employeesCount);
     });
+  });
+
+  request.on('error', function(error) {
+    deferred.reject(error);
   });
 
 /*

@@ -2,6 +2,7 @@
 
 var should = require('should'),
   nock = require('nock'),
+  rewire = require('rewire'),
   client = require('../client/employees.client');
 
 describe('employees count service', function() {
@@ -48,7 +49,7 @@ describe('employees count service', function() {
     });
   });
 
-  it('should return an error is service is too long', function(done) {
+  it('should return an error if service is too long', function(done) {
     nock('http://localhost:3000')
       .get('/employees/count')
       .delay(1500)
@@ -58,6 +59,21 @@ describe('employees count service', function() {
       done(new Error('method should return an error'));
     }).catch(function() {
     	done();
+    });
+  });
+
+  it('should return an error if service is unavailable', function(done) {
+    nock.enableNetConnect();
+
+    client = rewire('../client/employees.client');
+    client.__set__('config', {
+      hostname: 'unknownhost.xebia.fr'
+    });
+
+    client.countEmployees().then(function(count) {
+      done(new Error('method should return an error'));
+    }).catch(function() {
+      done();
     });
   });
 });
