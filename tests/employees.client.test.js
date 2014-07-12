@@ -25,6 +25,18 @@ describe('employees count service', function() {
     });
   });
 
+  it('should return an error if reponse is not json', function(done) {
+    nock('http://localhost:3000')
+      .get('/employees/count')
+      .reply(200, '<count>1986</count>');
+
+    client.countEmployees().then(function(count) {
+      done(new Error('method should return an error'));
+    }).catch(function(err) {
+      done();
+    });
+  });
+
   it('should return an error if http service returns no count', function(done) {
     nock('http://localhost:3000')
       .get('/employees/count')
@@ -52,7 +64,7 @@ describe('employees count service', function() {
   it('should return an error if service is too long', function(done) {
     nock('http://localhost:3000')
       .get('/employees/count')
-      .delay(1500)
+      .delayConnection(1500)
       .reply(200, {count:1986});
 
     client.countEmployees().then(function(count) {

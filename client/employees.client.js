@@ -1,46 +1,34 @@
 'use strict';
 
 var Q = require('Q'),
-  http = require('http'),
+  request = require('request'),
   config = require('./config');
 
 exports.countEmployees = function() {
   var deferred = Q.defer();
 
+  //TODO utiliser querystring
   var options = {
-    hostname: config.hostname,
-	  port: 3000,
-	  path: '/employees/count'
+    url: 'http://' + config.hostname + ':3000/employees/count',
+    json: true,
+    timeout: 500
   };
 
-  var request = http.get(options, function(res) {
-  	if (res.statusCode != 200) {
-  	  deferred.reject(new Error('Service has an invalid status code : ' + res.statusCode));
-  	}
+  request(options, function (error, response, body) {
+    if (error) {
+      deferred.reject(error);
+      return;
+    }
+    if (response.statusCode != 200) {
+      deferred.reject(new Error('Service has an invalid status code : ' + response.statusCode));
+    }
 
-    res.setEncoding('utf8');
-    res.on('data', function(chunk) {
-      var employeesCount = JSON.parse(chunk).count;
-      if (! employeesCount) {
-      	deferred.reject(new Error('Service did not return employees count'));
-      }
-      deferred.resolve(employeesCount);
-    });
+    var employeesCount = body.count;
+    if (! employeesCount) {
+      deferred.reject(new Error('Service did not return employees count'));
+    }
+    deferred.resolve(employeesCount);
   });
-
-  request.on('error', function(error) {
-    deferred.reject(error);
-  });
-
-/*
-  request.on('socket', function (socket) {
-    socket.setTimeout(500);  
-    socket.on('timeout', function() {
-      console.log('timeout');
-      request.abort();
-      deferred.reject(new Error('Service response was too long'));
-    });
-  });*/
 
   return deferred.promise;
 };
