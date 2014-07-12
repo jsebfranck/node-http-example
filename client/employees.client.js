@@ -7,7 +7,6 @@ var Q = require('Q'),
 exports.countEmployees = function() {
   var deferred = Q.defer();
 
-  //TODO utiliser querystring
   var options = {
     url: 'http://' + config.hostname + ':3000/employees/count',
     json: true,
