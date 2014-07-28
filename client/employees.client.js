@@ -8,7 +8,7 @@ exports.countEmployees = function() {
   var deferred = Q.defer();
 
   var options = {
-    url: 'http://' + config.hostname + ':3000/employees/count',
+    url: config.employeeCountUrl,
     json: true,
     timeout: 500
   };
@@ -18,6 +18,7 @@ exports.countEmployees = function() {
       deferred.reject(error);
       return;
     }
+
     if (response.statusCode != 200) {
       deferred.reject(new Error('Service has an invalid status code : ' + response.statusCode));
     }
@@ -26,6 +27,7 @@ exports.countEmployees = function() {
     if (! employeesCount) {
       deferred.reject(new Error('Service did not return employees count'));
     }
+
     deferred.resolve(employeesCount);
   });
 

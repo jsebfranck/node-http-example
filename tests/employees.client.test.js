@@ -10,10 +10,13 @@ describe('employees count service', function() {
     nock.disableNetConnect();
   });
 
+  var whenEmployeesCountIsCalled = function() {
+    return nock('http://localhost:3000')
+      .get('/employees/count');
+  };
+
   it('should return employees count', function(done) {
-    nock('http://localhost:3000')
-      .get('/employees/count')
-      .reply(200, {count:1986});
+    whenEmployeesCountIsCalled().reply(200, {count:1986});
 
     client.countEmployees().then(function(count) {
       try {
@@ -26,9 +29,7 @@ describe('employees count service', function() {
   });
 
   it('should return an error if reponse is not json', function(done) {
-    nock('http://localhost:3000')
-      .get('/employees/count')
-      .reply(200, '<count>1986</count>');
+    whenEmployeesCountIsCalled().reply(200, '<count>1986</count>');
 
     client.countEmployees().then(function(count) {
       done(new Error('method should return an error'));
@@ -38,9 +39,7 @@ describe('employees count service', function() {
   });
 
   it('should return an error if http service returns no count', function(done) {
-    nock('http://localhost:3000')
-      .get('/employees/count')
-      .reply(200, {nb:1986});
+    whenEmployeesCountIsCalled().reply(200, {nb:1986});
 
     client.countEmployees().then(function(count) {
       done(new Error('method should return an error'));
@@ -50,9 +49,7 @@ describe('employees count service', function() {
   });
 
   it('should return an error if http service is in error', function(done) {
-    nock('http://localhost:3000')
-      .get('/employees/count')
-      .reply(500, {});
+    whenEmployeesCountIsCalled().reply(500, {});
 
     client.countEmployees().then(function(count) {
       done(new Error('method should return an error'));
@@ -62,8 +59,7 @@ describe('employees count service', function() {
   });
 
   it('should return an error if service is too long', function(done) {
-    nock('http://localhost:3000')
-      .get('/employees/count')
+    whenEmployeesCountIsCalled()
       .delayConnection(1500)
       .reply(200, {count:1986});
 
