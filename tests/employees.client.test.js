@@ -15,15 +15,12 @@ describe('employees count service', function() {
       .get('/employees/count');
   };
 
-  it('should return employees count', function(done) {
+  it('should return employees count', function() {
     whenEmployeesCountIsCalled().reply(200, {count:1986});
 
     client.countEmployees().then(function(count) {
       count.should.equal(1986);
-      done();
-    }).catch(function(error) {
-      done(error)
-    });
+    }).done();
   });
 
   it('should return an error if reponse is not json', function(done) {
