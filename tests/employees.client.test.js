@@ -19,12 +19,10 @@ describe('employees count service', function() {
     whenEmployeesCountIsCalled().reply(200, {count:1986});
 
     client.countEmployees().then(function(count) {
-      try {
-        count.should.equal(1986);
-        done();
-      } catch (assertionError) {
-        done(assertionError);
-      }
+      count.should.equal(1986);
+      done();
+    }).catch(function(error) {
+      done(error)
     });
   });
 
@@ -33,7 +31,7 @@ describe('employees count service', function() {
 
     client.countEmployees().then(function(count) {
       done(new Error('method should return an error'));
-    }).catch(function(err) {
+    }).catch(function() {
       done();
     });
   });
@@ -41,9 +39,9 @@ describe('employees count service', function() {
   it('should return an error if http service returns no count', function(done) {
     whenEmployeesCountIsCalled().reply(200, {nb:1986});
 
-    client.countEmployees().then(function(count) {
+    client.countEmployees().then(function() {
       done(new Error('method should return an error'));
-    }).catch(function(err) {
+    }).catch(function() {
       done();
     });
   });
@@ -51,9 +49,9 @@ describe('employees count service', function() {
   it('should return an error if http service is in error', function(done) {
     whenEmployeesCountIsCalled().reply(500, {});
 
-    client.countEmployees().then(function(count) {
+    client.countEmployees().then(function() {
       done(new Error('method should return an error'));
-    }).catch(function(err) {
+    }).catch(function() {
       done();
     });
   });
@@ -63,7 +61,7 @@ describe('employees count service', function() {
       .delayConnection(1500)
       .reply(200, {count:1986});
 
-    client.countEmployees().then(function(count) {
+    client.countEmployees().then(function() {
       done(new Error('method should return an error'));
     }).catch(function() {
     	done();
@@ -78,7 +76,7 @@ describe('employees count service', function() {
       hostname: 'unknownhost.xebia.fr'
     });
 
-    client.countEmployees().then(function(count) {
+    client.countEmployees().then(function() {
       done(new Error('method should return an error'));
     }).catch(function() {
       done();

@@ -19,12 +19,12 @@ exports.countEmployees = function() {
       return;
     }
 
-    if (response.statusCode != 200) {
+    if (response.statusCode >= 300) {
       deferred.reject(new Error('Service has an invalid status code : ' + response.statusCode));
     }
 
     var employeesCount = body.count;
-    if (! employeesCount) {
+    if (!employeesCount) {
       deferred.reject(new Error('Service did not return employees count'));
     }
 
